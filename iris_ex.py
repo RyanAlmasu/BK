@@ -3,6 +3,8 @@ from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
+# Import necessary library for Support Vector Machine (SVM)
+from sklearn.svm import SVC
 import streamlit as st
 
 # Load Iris dataset
@@ -29,7 +31,8 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_
 # Algorithms
 algorithms = {
     'Decision Tree': DecisionTreeClassifier(),
-    'K-Nearest Neighbors': KNeighborsClassifier()
+    'K-Nearest Neighbors': KNeighborsClassifier(),
+    'Support Vector Machine': SVC()
 }
 
 # Streamlit setup
@@ -56,13 +59,22 @@ predict_btn = st.button("Predict", type="primary")
 
 # Perform prediction on button click
 prediction = ":violet[-]"
+accuracy = 0.0
 if predict_btn:
     model = algorithms[selected_algorithm]
     inputs = [[sepal_length, sepal_width, petal_length, petal_length]]
     prediction = model.fit(X_train, y_train).predict(inputs)[0]
 
-# Display the prediction result
+    # Calculate accuracy
+    y_pred = model.predict(X_test)
+    accuracy = (y_pred == y_test).mean()
+
+# Display the prediction result and accuracy
 st.write("")
 st.write("")
 st.subheader("Prediction:")
 st.subheader(prediction)
+
+# Display accuracy
+st.subheader("Accuracy:")
+st.write(f"The total accuracy of the {selected_algorithm} algorithm is: {accuracy:.2%}")
